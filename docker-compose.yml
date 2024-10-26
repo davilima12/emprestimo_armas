@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+    westside_db:
+        image: mysql:8
+        container_name: westside_db
+        volumes:
+            - westside_db:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: 1234
+            MYSQL_DATABASE: westside
+        ports:
+            - "37018:3306"
+        restart: always
+        networks:
+            westside_motorcycle:
+                ipv4_address: 172.35.0.3
+    westside_api:
+        container_name: westside_api
+        build: .
+        ports:
+            - "8001:80"
+        volumes:
+            - ./:/var/www/html/project
+            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+        depends_on:
+            - westside_db
+        restart: always
+        networks:
+            westside_motorcycle:
+                ipv4_address: 172.35.0.2
+
+volumes:
+    westside_db:
+        driver: local
+
+networks:
+    westside_motorcycle:
+        driver: bridge
+        name: westside_motorcycle
+        ipam:
+            config:
+                - subnet: 172.35.0.0/16
