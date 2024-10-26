@@ -25,7 +25,6 @@ return new class extends Migration
             $table->foreign('product_serial_id')->references('id')->on('product_serials')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
 
-            $table->unique(['loan_id', 'product_serial_id']);
         });
     }
 

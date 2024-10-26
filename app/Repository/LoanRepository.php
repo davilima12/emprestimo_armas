@@ -37,7 +37,7 @@ class LoanRepository
 
     public function findById(int $id): Loan
     {
-        return Loan::with(['userGiver', 'userReceiver'])->findOrFail($id);
+        return Loan::with(['userGiver', 'userReceiver', 'loanedProducts.product', 'loanedProducts.productSerial'])->findOrFail($id);
     }
 
     public function exists(array $products)

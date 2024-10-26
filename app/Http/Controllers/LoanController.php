@@ -26,7 +26,7 @@ class LoanController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $request->validate([
             'product_serial_id' => 'required|exists:product_serials,id',
             'user_receiver_email' => 'required|email',
             'user_receiver_password' => 'required|string',
@@ -81,11 +81,12 @@ class LoanController extends Controller
 
     public function update(Request $request, $id)
     {
-        $data = $request->validate([
+        $request->validate([
+            'product_serial_id' => 'required|exists:product_serials,id',
+            'user_receiver_email' => 'required|email',
+            'user_receiver_password' => 'required|string',
             'giver_email' => 'required|email',
             'giver_password' => 'required|string',
-            'receiver_email' => 'required|email',
-            'receiver_password' => 'required|string',
             'products' => 'required|array',
             'products.*.product_id' => ['required', Rule::exists('products', 'id')],
             'products.*.serial_id' => ['nullable', Rule::exists('product_serials', 'id')],
@@ -94,31 +95,45 @@ class LoanController extends Controller
         ]);
 
         // Autenticação do usuário que está emprestando
-        if (!Auth::attempt(['email' => $request->giver_email, 'password' => $request->giver_password])) {
+         if (!Auth::attempt(['email' => $request->giver_email, 'password' => $request->giver_password])) {
             return response()->json(['message' => 'Unauthorized - Giver'], 401);
         }
 
         $userGiverId = Auth::id();
 
         // Autenticação do usuário que está recebendo
-        if (!Auth::attempt(['email' => $request->receiver_email, 'password' => $request->receiver_password])) {
+        if (!Auth::attempt(['email' => $request->user_receiver_email, 'password' => $request->user_receiver_password])) {
             return response()->json(['message' => 'Unauthorized - Receiver'], 401);
         }
 
-        $userReceiverId = User::where('email', $request->receiver_email)->first()->id;
+        $userReceiverId = User::where('email', $request->user_receiver_email)->first()->id;
 
-        $existingLoan = $this->loanService->checkExistingLoan($request->products);
+        $existingLoan = $this->loanService->findLoan($id);
+        $existingLoanProducts = $existingLoan->loanedProducts;
+        $isSameProducts = true;
 
-        if ($existingLoan) {
-            return response()->json(['message' => 'Item already loaned out'], 400);
+        foreach ($request->products as $product) {
+            $match = $existingLoanProducts->firstWhere('product_id', $product['product_id']);
+            if (!$match || ($match->product_serial_id != $product['serial_id'])) {
+                $isSameProducts = false;
+                break;
+            }
+        }
+
+        if (!$isSameProducts) {
+            $existingLoanCheck = $this->loanService->checkExistingLoan($request->products);
+            if ($existingLoanCheck) {
+                return response()->json(['message' => 'Item already loaned out'], 400);
+            }
         }
 
         $loanData = [
-            'user_giver_id' => $userGiverId,
-            'user_receiver_id' => $userReceiverId,
-            'product_serial_id' => $request->product_serial_id,
-            'magazines' => $request->magazines,
-            'ammunition' => $request->ammunition,
+            'user_giver_id'         => $userGiverId,
+            'user_receiver_id'      => $userReceiverId,
+            'product_serial_id'     => $request->product_serial_id,
+            'magazines'             => $request->magazines,
+            'ammunition'            => $request->ammunition,
+            'products'              => $request->products
         ];
 
         $this->loanService->updateLoan($id, $loanData);
