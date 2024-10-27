@@ -9,7 +9,7 @@ use App\Features\Auth\Exceptions\PasswordAlreadySavedException;
 use App\Features\Auth\Exceptions\UserNotFoundException;
 use App\Features\Auth\Mail\ResetPasswordEmail;
 use App\Features\Auth\Models\PasswordResetToken;
-use App\Features\Email\Dtos\SendEmailDto;
+use Illuminate\Support\Facades\Mail;
 use App\Features\Email\Services\SendEmailService;
 use App\Features\User\Models\User;
 use App\Features\User\ValueObjects\Email;
@@ -44,16 +44,9 @@ readonly class AuthService
     public function sendForgotPasswordEmail(Email $email): void
     {
         $user = User::findByEmail($email);
-        // if (!$user->isVerified()) {
-        //     throw new InvalidActionException('Ação invalida, por favor confirme seu email!');
-        // }
 
         $passwordResetToken = $user->createPasswordResetToken();
-        $this->sendEmailService->sendEmail(new SendEmailDto(
-            to: new Email($user->email),
-            name: 'teste',
-            body: new ResetPasswordEmail($passwordResetToken),
-        ));
+        Mail::to($user->email)->send(new ResetPasswordEmail($passwordResetToken));
     }
 
     /**

@@ -25,7 +25,6 @@ Route::prefix('/auth')
             ->group(function () {
                 Route::put('/confirmation/{token}', [AuthController::class, 'confirmPassword']);
                 Route::put('/reset/{token}', [AuthController::class, 'resetPassword']);
-                Route::put('/reset/{token}/verify', [AuthController::class, 'verifyToken']);
                 Route::put('/forgot', [AuthController::class, 'sendForgotPasswordEmail']);
             });
     });

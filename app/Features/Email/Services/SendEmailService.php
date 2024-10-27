@@ -26,7 +26,7 @@ class SendEmailService
             $response = $sendgrid->send($email);
             $this->logResponse($emailDto, $response);
         } catch (\Exception $e) {
-            Log::error('error-send-email', ExceptionFormatter::format($e));
+            Log::error('error-send-email', $e);
         }
     }
 
