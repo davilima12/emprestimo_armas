@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Features\Auth\Middleware\AuthenticateMiddleware;
+use App\Http\Middleware\CheckAdmin;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,8 +18,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'auth' => AuthenticateMiddleware::class,
+            'admin' => CheckAdmin::class,
+        ]);
     })
+
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (Throwable $exception) {
             if ($exception instanceof ValidationException) {

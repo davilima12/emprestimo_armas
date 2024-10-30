@@ -9,6 +9,7 @@ use App\Http\Controllers\LoanController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ProductController;
+use App\Http\Middleware\CheckAdmin;
 
 // Rotas para retornar os produtos
 Route::get('/product/{type}', [ProductController::class, 'getProductByType']);
@@ -29,14 +30,14 @@ Route::prefix('/auth')
             });
     });
 
-Route::middleware(AuthenticateMiddleware::class)
+Route::middleware('auth')
     ->group(function () {
         Route::prefix('loans')->group(function () {
             Route::get('/', [LoanController::class, 'index']); // Lista todos os empréstimos
             Route::post('/', [LoanController::class, 'store']); // Cria um novo empréstimo
             Route::get('/{id}', [LoanController::class, 'show']); // Mostra um empréstimo específico
-            Route::put('/{id}', [LoanController::class, 'update']); // Atualiza um empréstimo existente
-            Route::delete('/{id}', [LoanController::class, 'destroy']); // Deleta um empréstimo
+            Route::put('/{id}', [LoanController::class, 'update'])->middleware('admin'); // Atualiza um empréstimo existente
+            Route::delete('/{id}', [LoanController::class, 'destroy'])->middleware('admin'); // Deleta um empréstimo
 
             // Rota para devolver produtos
             Route::post('/{loanId}/return', [LoanController::class, 'returnProducts']);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserType;
 use App\Models\LoanProduct;
 use App\Models\User;
 use App\Services\LoanService;

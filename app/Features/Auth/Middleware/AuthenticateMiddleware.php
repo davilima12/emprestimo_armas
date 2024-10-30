@@ -20,6 +20,7 @@ class AuthenticateMiddleware
         if (is_null($request->bearerToken())) {
             throw UnauthorizedException::unauthorized();
         }
+
         $authToken = AuthToken::findByToken($request->bearerToken());
         $authToken->validateOrCry();
         AuthenticatedUser::set($authToken->user);
