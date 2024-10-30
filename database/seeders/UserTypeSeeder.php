@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\UserType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -13,9 +13,18 @@ class UserTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('user_type')->insert([
+        $data = [
             ['name' => 'Admin'],
-            ['name' => 'User'],
-        ]);
+            ['name' => 'User']
+        ];
+
+        foreach ($data as $d) {
+            UserType::updateOrCreate(
+                [
+                    'name' =>   $d['name'],
+                ],
+                $d
+            );
+        }
     }
 }

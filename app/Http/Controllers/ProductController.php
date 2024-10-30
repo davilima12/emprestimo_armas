@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -38,5 +39,15 @@ class ProductController extends Controller
             ->get();
 
         return response()->json($loanedProducts);
+    }
+
+    public function getAll()
+    {
+        return Product::select('products.*',
+            DB::raw('IF(MAX(loan_products.product_id IS NOT NULL AND loan_products.returned = 0), true, false) as is_loaned')
+        )
+        ->leftJoin('loan_products', 'loan_products.product_id', 'products.id')
+        ->groupBy('products.id')
+        ->get();
     }
 }

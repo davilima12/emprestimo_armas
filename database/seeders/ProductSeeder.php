@@ -28,10 +28,28 @@ class ProductSeeder extends Seeder
                 'description' => 'Handheld pistol',
                 'product_type' => 'handheld_weapon',
             ],
+            [
+                'name' => 'Cone',
+                'description' => 'Cone amarelo',
+                'product_type' => 'accessory',
+            ],
+
+            [
+                'name' => 'Porta arma',
+                'description' => 'Porta arma',
+                'product_type' => 'accessory',
+            ],
         ];
 
         foreach ($products as $product) {
-            Product::create($product);
+            Product::updateOrCreate(
+                [
+                    'name' =>  $product['name'],
+                    'description' => $product['description'],
+                    'product_type' =>   $product['product_type'],
+                ],
+                $product
+            );
         }
     }
 }

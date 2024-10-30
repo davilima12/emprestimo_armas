@@ -29,7 +29,13 @@ class SerialNumberSeeder extends Seeder
         ];
 
         foreach ($serialNumbers as $serial) {
-            ProductSerial::create($serial);
+            ProductSerial::updateOrCreate(
+                [
+                    'product_id'    => $serial['product_id'],
+                    'serial_number' => $serial['serial_number']
+                ],
+                $serial
+            );
         }
     }
 }

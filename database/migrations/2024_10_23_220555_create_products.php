@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('product_type', ['weapon', 'body_armor', 'handheld_weapon']);
+            $table->enum('product_type', ['weapon', 'body_armor', 'handheld_weapon', 'accessory']);
             $table->text('description')->nullable();
             $table->timestamps();
         });

@@ -27,7 +27,6 @@ class LoanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'product_serial_id' => 'required|exists:product_serials,id',
             'user_receiver_email' => 'required|email',
             'user_receiver_password' => 'required|string',
             'giver_email' => 'required|email',
@@ -82,7 +81,6 @@ class LoanController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'product_serial_id' => 'required|exists:product_serials,id',
             'user_receiver_email' => 'required|email',
             'user_receiver_password' => 'required|string',
             'giver_email' => 'required|email',
@@ -114,7 +112,7 @@ class LoanController extends Controller
 
         foreach ($request->products as $product) {
             $match = $existingLoanProducts->firstWhere('product_id', $product['product_id']);
-            if (!$match || ($match->product_serial_id != $product['serial_id'])) {
+            if (!$match || ( isset($product['serial_id']) && $match->product_serial_id != $product['serial_id'])) {
                 $isSameProducts = false;
                 break;
             }
