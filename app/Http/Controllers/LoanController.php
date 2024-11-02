@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\LoanSummaryEmail;
 use App\Mail\LoanReceiptEmail;
 use App\Models\Loan;
 use App\Models\LoanProduct;
@@ -231,7 +232,7 @@ class LoanController extends Controller
                     'receipt_date' => now()->format('Y-m-d H:i:s'),
                 ]
             );
-
+            DB::commit();
             return response()->json(['message' => 'Products returned successfully']);
 
         }catch(Exception $e){
@@ -239,5 +240,39 @@ class LoanController extends Controller
             Log::error('Erro ao realizar a transação: ' . $e->getMessage());
             return response()->json($e->getMessage(), 400);
         }
+    }
+
+
+    public function loansByUser(int $user_id, $filters = [])
+    {
+        $query = Loan::with(['userGiver', 'userReceipt', 'userReceiver', 'loanedProducts.product', 'loanedProducts.productSerial'])
+            ->where('user_giver_id', $user_id);
+
+        if (!isset($filters['start_date'])) {
+            $query = $query->whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()]);
+        } elseif (isset($filters['start_date']) && isset($filters['end_date'])) {
+            $query = $query->whereBetween('created_at', [$filters['start_date'], $filters['end_date']]);
+        }
+
+        return $query->get();
+    }
+
+
+
+
+    public function sendMailLoansByUser(Request $request, int $user_id)
+    {
+        $filters = $request->all();
+        $user = User::find($user_id);
+
+        $loans = $this->loansByUser($user_id, $filters);
+
+        if ($loans->isEmpty()) {
+            return response()->json(['message' => 'Nenhum empréstimo encontrado para enviar.'], 404);
+        }
+
+        Mail::to($user->email)->send(new LoanSummaryEmail($loans, $user));
+
+        return response()->json(['message' => 'E-mail enviado com sucesso']);
     }
 }

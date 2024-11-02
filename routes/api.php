@@ -22,12 +22,17 @@ Route::get('/products/loaned', [ProductController::class, 'getLoanedProducts']);
 Route::prefix('/auth')
     ->group(function () {
         Route::post('/login', [AuthController::class, 'login']);
+
+        // cadastrar usuario
         Route::post('/create-user', [UserController::class, 'createAccount']);
 
         Route::prefix('/password')
             ->group(function () {
+                //verifica se o token de recuperar senha ainda e valido
                 Route::get('/verify-token/{token}', [AuthController::class, 'verifyToken']);
+                //rota para alterar senha
                 Route::put('/reset/{token}', [AuthController::class, 'resetPassword']);
+                // enviar email para alterar senha
                 Route::put('/forgot', [AuthController::class, 'sendForgotPasswordEmail']);
             });
     });
@@ -43,6 +48,12 @@ Route::middleware('auth')
 
             // Rota para devolver produtos
             Route::post('/{loanId}/return', [LoanController::class, 'returnProducts']);
+
+            // Lista todos os empréstimos feitos por um usuario
+            Route::get('/user-loans/{user_id}', [LoanController::class, 'loansByUser']);
+
+            // Envia email com os emprestimos por periodo
+            Route::get('/send-mail-user-loans/{user_id}', [LoanController::class, 'sendMailLoansByUser']);
         });
 
     });
