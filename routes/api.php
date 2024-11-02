@@ -26,6 +26,7 @@ Route::prefix('/auth')
 
         Route::prefix('/password')
             ->group(function () {
+                Route::get('/verify-token/{token}', [AuthController::class, 'verifyToken']);
                 Route::put('/reset/{token}', [AuthController::class, 'resetPassword']);
                 Route::put('/forgot', [AuthController::class, 'sendForgotPasswordEmail']);
             });

@@ -32,12 +32,12 @@ class LoanRepository
 
     public function getAll()
     {
-        return Loan::with(['userGiver', 'userReceiver', 'loanedProducts.product', 'loanedProducts.productSerial'])->get();
+        return Loan::with(['userGiver', 'userReceiver','userReceipt', 'loanedProducts.product', 'loanedProducts.productSerial'])->get();
     }
 
     public function findById(int $id): Loan
     {
-        return Loan::with(['userGiver', 'userReceiver', 'loanedProducts.product', 'loanedProducts.productSerial'])->findOrFail($id);
+        return Loan::with(['userGiver','userReceipt', 'userReceiver', 'loanedProducts.product', 'loanedProducts.productSerial'])->findOrFail($id);
     }
 
     public function exists(array $products)

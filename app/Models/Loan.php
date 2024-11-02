@@ -13,12 +13,20 @@ class Loan extends Model
     protected $fillable = [
         'user_giver_id',
         'user_receiver_id',
+        'user_receipt_id',
+        'receipt_date'
     ];
 
     // Relacionamento com o usuário que empresta
     public function userGiver()
     {
         return $this->belongsTo(User::class, 'user_giver_id');
+    }
+
+    // Relacionamento com o usuário que empresta
+    public function userReceipt()
+    {
+        return $this->belongsTo(User::class, 'user_receipt_id');
     }
 
     // Relacionamento com o usuário que recebe

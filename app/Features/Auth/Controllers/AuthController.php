@@ -61,21 +61,21 @@ class AuthController extends Controller
     /**
      * @throws UserNotFoundException
      */
-    public function resetPassword(string $token, ConfirmPasswordRequest $request): Response
+    public function resetPassword(string $token, ConfirmPasswordRequest $request)
     {
         $this->authService->resetPassword($token, $request->get('password'));
 
-        return response()->noContent();
+        return response()->json('Senha alterada com sucesso', 200);
     }
 
     /**
      * @throws UserNotFoundException
      */
-    public function verifyToken(string $token): Response
+    public function verifyToken(string $token)
     {
         $this->authService->verifyToken($token);
 
-        return response()->noContent();
+        return response()->json('Token valido', 200);
     }
 
     /**

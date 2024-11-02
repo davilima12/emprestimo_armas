@@ -35,7 +35,7 @@ class ProductController extends Controller
         $loanedProducts = Product::whereHas('loanedProducts', function ($query) {
                 $query->where('returned', false);
             })
-            ->with(['serialNumbers', 'loanedProducts.loan.userGiver' , 'loanedProducts.loan.userReceiver'])
+            ->with(['serialNumbers', 'loanedProducts.loan.userGiver' , 'loanedProducts.loan.userReceiver', 'loanedProducts.loan.userReceipt'])
             ->get();
 
         return response()->json($loanedProducts);
