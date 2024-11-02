@@ -22,7 +22,7 @@ Route::get('/products/loaned', [ProductController::class, 'getLoanedProducts']);
 Route::prefix('/auth')
     ->group(function () {
         Route::post('/login', [AuthController::class, 'login']);
-        Route::post('/create', [UserController::class, 'createAccount']);
+        Route::post('/create-user', [UserController::class, 'createAccount']);
 
         Route::prefix('/password')
             ->group(function () {
