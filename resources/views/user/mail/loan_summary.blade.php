@@ -80,8 +80,8 @@
                     <td>{{ $loan?->userGiver?->name }}</td>
                     <td>{{ $loan?->userReceiver?->name }}</td>
                     <td>{{ \Carbon\Carbon::parse($loan->created_at)->format('d/m/Y') }}</td>
-                    <td>{{ $user?->userReceipt?->name }}</td>
-                    <td>{{ $loan->receipt_date ? \Carbon\Carbon::parse($loan->receipt_date)->format('d/m/Y') : 'N/A' }}</td>
+                    <td>{{ $loan?->userReceipt?->name }}</td>
+                    <td>{{ $loan?->receipt_date ? \Carbon\Carbon::parse($loan->receipt_date)->format('d/m/Y') : '' }}</td>
                 </tr>
                 <tr>
                     <td colspan="5">
