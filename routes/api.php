@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Features\Auth\Controllers\AuthController;
 use App\Features\Auth\Middleware\AuthenticateMiddleware;
+use App\Features\User\Controllers\UserController;
 use App\Http\Controllers\LoanController;
 
 use Illuminate\Support\Facades\Route;
@@ -21,10 +22,10 @@ Route::get('/products/loaned', [ProductController::class, 'getLoanedProducts']);
 Route::prefix('/auth')
     ->group(function () {
         Route::post('/login', [AuthController::class, 'login']);
+        Route::post('/create', [UserController::class, 'createAccount']);
 
         Route::prefix('/password')
             ->group(function () {
-                Route::put('/confirmation/{token}', [AuthController::class, 'confirmPassword']);
                 Route::put('/reset/{token}', [AuthController::class, 'resetPassword']);
                 Route::put('/forgot', [AuthController::class, 'sendForgotPasswordEmail']);
             });
