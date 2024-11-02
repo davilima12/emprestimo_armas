@@ -33,13 +33,13 @@ return new class() extends Migration {
             $table->timestamps();
         });
 
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->id();
-            $table->foreignIdFor(User::class);
-            $table->string('email');
-            $table->ulid('token');
-            $table->timestamps();
-        });
+        // Schema::create('password_reset_tokens', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignIdFor(User::class);
+        //     $table->string('email');
+        //     $table->ulid('token');
+        //     $table->timestamps();
+        // });
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
