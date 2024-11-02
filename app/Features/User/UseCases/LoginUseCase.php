@@ -18,21 +18,6 @@ class LoginUseCase
      */
     public function execute(Email $email, string $password): string
     {
-        $user = User::where('email', $email->value)->whereIn('user_type_id', [1, 3])->first();
 
-        if (is_null($user)) {
-            throw new UserNotFoundException('Email ou senha incorretos!');
-        }
-
-        // if (!$user->isVerified()) {
-        //     throw new InvalidActionException('Ação invalida, por favor confirme seu email!');
-        // }
-
-        $passwordMatch = Hash::check($password, $user->password);
-        if (!$passwordMatch) {
-            throw new UserNotFoundException('Email ou senha incorretos!');
-        }
-
-        return $user->generateBearerToken()->token;
     }
 }

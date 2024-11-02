@@ -12,14 +12,17 @@ use App\Features\Auth\Requests\ConfirmPasswordRequest;
 use App\Features\Auth\Requests\LoginRequest;
 use App\Features\Auth\Services\AuthService;
 use App\Features\Auth\Singletons\AuthenticatedUser;
+use App\Features\User\Models\User;
 use App\Features\User\Presenters\CreateUserPresenter;
 use App\Features\User\UseCases\LoginUseCase;
 use App\Features\User\UseCases\LoginUseCaseCliente;
 use App\Features\User\ValueObjects\Email;
 use App\Http\Controllers\Controller;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
@@ -81,9 +84,18 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        $output = app(LoginUseCase::class)->execute($request->getEmail(), $request->get('password'));
+        $user = User::where('email', $request->email)->whereIn('user_type_id', [1, 3])->first();
 
-        return response()->json(['token' => $output]);
+        if (is_null($user)) {
+            throw new UserNotFoundException('Email ou senha incorretos!');
+        }
+
+        $passwordMatch = Hash::check($request->password, $user->password);
+        if (!$passwordMatch) {
+            throw new UserNotFoundException('Email ou senha incorretos!');
+        }
+
+        return response()->json(['token' => $user->generateBearerToken()->token]);
     }
 
 
