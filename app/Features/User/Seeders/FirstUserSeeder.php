@@ -20,21 +20,40 @@ class FirstUserSeeder extends Seeder
      */
     public function run(): void
     {
-        if (app()->environment() === 'testing') {
-            return;
-        }
-
-        $userExist = User::findByEmail(new Email(config('auth.first_user.email')), throw: false);
-        if ($userExist) {
-            return;
-        }
-
-        User::create([
-            'email' => 'davidaer8847@gmail.com',
-            'name' => 'admin',
+        User::updateOrCreate([
+            'email' => 'teste@gmail.com',
+        ],
+        [
+            'email' => 'teste@gmail.com',
+            'name' => 'teste',
             'role_id' => Roles::SUPER_ADMIN->id(),
             'token' => Ulid::generate(),
-            'password' => bcrypt('admin'),
+            'password' => bcrypt('teste'),
+            'user_type_id' => 1
+        ]);
+
+
+        User::updateOrCreate([
+            'email' => 'teste2@gmail.com',
+        ],
+        [
+            'email' => 'teste2@gmail.com',
+            'name' => 'teste2',
+            'role_id' => Roles::SUPER_ADMIN->id(),
+            'token' => Ulid::generate(),
+            'password' => bcrypt('teste'),
+            'user_type_id' => 2
+        ]);
+
+        User::updateOrCreate([
+            'email' => 'teste3@gmail.com',
+        ],
+        [
+            'email' => 'teste3@gmail.com',
+            'name' => 'teste3',
+            'role_id' => Roles::SUPER_ADMIN->id(),
+            'token' => Ulid::generate(),
+            'password' => bcrypt('teste'),
             'user_type_id' => 2
         ]);
     }

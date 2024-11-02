@@ -162,7 +162,6 @@ class LoanController extends Controller
         foreach ($data['products'] as $product) {
             LoanProduct::where('loan_id', $loanId)
                 ->where('product_id', $product['product_id'])
-                ->where('product_serial_id', $product['serial_id'])
                 ->update(['returned' => true]);
         }
 

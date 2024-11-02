@@ -15,7 +15,8 @@ class UserTypeSeeder extends Seeder
     {
         $data = [
             ['name' => 'Admin'],
-            ['name' => 'User']
+            ['name' => 'User'],
+            ['name' => 'Middle_room'],
         ];
 
         foreach ($data as $d) {

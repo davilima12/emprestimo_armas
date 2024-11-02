@@ -18,7 +18,7 @@ class LoginUseCase
      */
     public function execute(Email $email, string $password): string
     {
-        $user = User::where('email', $email->value)->where('user_type_id', 2)->first();
+        $user = User::where('email', $email->value)->whereIn('user_type_id', [1, 3])->first();
 
         if (is_null($user)) {
             throw new UserNotFoundException('Email ou senha incorretos!');
