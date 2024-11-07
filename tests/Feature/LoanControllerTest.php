@@ -157,6 +157,6 @@ class LoanControllerTest extends TestCase
         /** @var Loan $loan */
         $loan = $response->original;
 
-        $this->assertEquals($userReceiver->id, $loan->user_receipt_id);
+        $this->assertEquals($userReceiver->id, $loan->user_receiver_id);
     }
 }

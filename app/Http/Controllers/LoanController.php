@@ -49,7 +49,6 @@ class LoanController extends Controller
             'products.*.ammunition' => 'integer|min:0',
         ]);
 
-        DB::beginTransaction();
         try {
             // Autenticação do usuário que está emprestando
             $userGive = User::checkUser($request->giver_email, $request->giver_password);
@@ -62,9 +61,10 @@ class LoanController extends Controller
             $existingLoan = $this->loanService->checkExistingLoan($request->products);
 
             if ($existingLoan) {
+
                 return response()->json(['message' => 'Item already loaned out'], 400);
             }
-
+            DB::beginTransaction();
             $loanData = [
                 'user_giver_id' => $userGive->id,
                 'user_receiver_id' => $userReceiverId,
