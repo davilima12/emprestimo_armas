@@ -29,7 +29,7 @@ class CreateUserRequest extends FormRequest
             'password.required' => 'O campo senha é obrigatório.',
             'confirm_password.required' => 'O campo confirmação de senha é obrigatório.',
             'confirm_password.same' => 'A confirmação de senha não coincide com a senha.',
-            'codigo_indicacao.exists' => 'O código de indicação fornecido não existe.'
+            'codigo_indicacao.exists' => 'O código de indicação fornecido não existe.',
         ];
     }
 }

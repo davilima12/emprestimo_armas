@@ -12,7 +12,7 @@ class PostCommentRequest extends FormRequest
     {
         return [
             'comment' => 'required',
-            'post_comment_id' => 'exists:post_comment,id'
+            'post_comment_id' => 'exists:post_comment,id',
         ];
     }
 

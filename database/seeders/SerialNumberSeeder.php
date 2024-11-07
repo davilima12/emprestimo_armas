@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Product;
 use App\Models\ProductSerial;
+use Illuminate\Database\Seeder;
 
 class SerialNumberSeeder extends Seeder
 {
@@ -32,7 +34,7 @@ class SerialNumberSeeder extends Seeder
             ProductSerial::updateOrCreate(
                 [
                     'product_id'    => $serial['product_id'],
-                    'serial_number' => $serial['serial_number']
+                    'serial_number' => $serial['serial_number'],
                 ],
                 $serial
             );

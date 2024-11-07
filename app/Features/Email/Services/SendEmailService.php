@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Features\Email\Services;
 
 use App\Features\Email\Dtos\SendEmailDto;
-use App\Features\Shared\Helpers\Exceptions\ExceptionFormatter;
 use Illuminate\Support\Facades\Log;
 use SendGrid\Mail\Mail;
 use SendGrid\Mail\TypeException;

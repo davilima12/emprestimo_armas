@@ -11,7 +11,7 @@ class PostLikedRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type_like_id' => 'required|exists:type_like,id'
+            'type_like_id' => 'required|exists:type_like,id',
         ];
     }
 

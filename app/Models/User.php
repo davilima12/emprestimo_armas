@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Model
+class User extends Authenticatable
 {
+    use HasFactory;
+
     protected $table = 'users';
 
     protected $fillable = [
@@ -21,29 +25,19 @@ class User extends Model
         'private',
     ];
 
-
-    public function user_profile_picture()
+    public function passwordMatch($password): bool
     {
-        return $this->hasOne(UserPhoto::class, 'user_id')->where('is_profile_picture', 1);
+        return password_verify($password, $this->password);
     }
 
-    /**
-     * Usuários que este usuário está seguindo.
-     *
-     * @return BelongsToMany
-     */
-    public function following(): BelongsToMany
+    public static function checkUser($email, $paswword): self
     {
-        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'followed_id');
-    }
+        $user = self::where('email', $email)->first();
 
-    /**
-     * Seguidores deste usuário.
-     *
-     * @return BelongsToMany
-     */
-    public function followers(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'followers', 'followed_id', 'follower_id');
+        if ($user && $user->passwordMatch($paswword)) {
+            return $user;
+        }
+
+        throw new \Exception('Unauthorized');
     }
 }

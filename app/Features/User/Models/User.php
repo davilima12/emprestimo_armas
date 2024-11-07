@@ -14,7 +14,6 @@ use App\Features\Auth\Models\Permission;
 use App\Features\Auth\Models\Role;
 use App\Features\User\ValueObjects\Email;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -33,7 +32,6 @@ use Symfony\Component\Uid\Ulid;
  * @property Collection<Permissions> $permissions
  * @property Role $role
  */
-
 class User extends Authenticatable
 {
     use HasFactory;

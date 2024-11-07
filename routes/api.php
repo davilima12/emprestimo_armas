@@ -3,14 +3,10 @@
 declare(strict_types=1);
 
 use App\Features\Auth\Controllers\AuthController;
-use App\Features\Auth\Middleware\AuthenticateMiddleware;
 use App\Features\User\Controllers\UserController;
 use App\Http\Controllers\LoanController;
-
-use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\ProductController;
-use App\Http\Middleware\CheckAdmin;
+use Illuminate\Support\Facades\Route;
 
 // Rotas para retornar os produtos
 Route::get('/product/{type}', [ProductController::class, 'getProductByType']);
@@ -55,5 +51,4 @@ Route::middleware('auth')
             // Envia email com os emprestimos por periodo
             Route::get('/send-mail-user-loans/{user_id}', [LoanController::class, 'sendMailLoansByUser']);
         });
-
     });

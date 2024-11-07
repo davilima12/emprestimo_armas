@@ -14,7 +14,7 @@ class PostCreateRequest extends FormRequest
             'photos' => 'required|array',
             'photos.*' => 'image|mimes:jpeg,png,jpg,gif',
             'type_post_id' => 'required|exists:post_type,id',
-            'name' => 'required'
+            'name' => 'required',
         ];
     }
 

@@ -9,10 +9,10 @@ use App\Features\Auth\Exceptions\PasswordAlreadySavedException;
 use App\Features\Auth\Exceptions\UserNotFoundException;
 use App\Features\Auth\Mail\ResetPasswordEmail;
 use App\Features\Auth\Models\PasswordResetToken;
-use Illuminate\Support\Facades\Mail;
 use App\Features\Email\Services\SendEmailService;
 use App\Features\User\Models\User;
 use App\Features\User\ValueObjects\Email;
+use Illuminate\Support\Facades\Mail;
 
 readonly class AuthService
 {

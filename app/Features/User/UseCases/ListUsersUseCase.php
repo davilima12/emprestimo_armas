@@ -22,8 +22,8 @@ class ListUsersUseCase
     public function execute(?string $search = null): Collection
     {
         return ModelsUser::query()
-            ->where('email','like', "%$search%")
-            ->orWhere('name','like', "%$search%")
+            ->where('email', 'like', "%$search%")
+            ->orWhere('name', 'like', "%$search%")
             ->get();
     }
 

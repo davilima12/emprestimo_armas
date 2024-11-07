@@ -6,19 +6,14 @@ namespace App\Features\Auth\Controllers;
 
 use App\Features\Auth\Exceptions\InvalidActionException;
 use App\Features\Auth\Exceptions\PasswordAlreadySavedException;
-use App\Features\Auth\Exceptions\UnauthorizedException;
 use App\Features\Auth\Exceptions\UserNotFoundException;
 use App\Features\Auth\Requests\ConfirmPasswordRequest;
 use App\Features\Auth\Requests\LoginRequest;
 use App\Features\Auth\Services\AuthService;
-use App\Features\Auth\Singletons\AuthenticatedUser;
 use App\Features\User\Models\User;
-use App\Features\User\Presenters\CreateUserPresenter;
-use App\Features\User\UseCases\LoginUseCase;
 use App\Features\User\UseCases\LoginUseCaseCliente;
 use App\Features\User\ValueObjects\Email;
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -29,7 +24,8 @@ class AuthController extends Controller
 {
     public function __construct(
         private readonly AuthService $authService,
-    ) {}
+    ) {
+    }
 
     /**
      * @throws PasswordAlreadySavedException
@@ -50,8 +46,8 @@ class AuthController extends Controller
     {
         try {
             $this->authService->sendForgotPasswordEmail(new Email($request->get('email')));
-            return response()->json('email enviado');
 
+            return response()->json('email enviado');
         } catch (\Throwable $th) {
             // Log::error('error'.$th);
             return response()->json(['message' => $th->getMessage(), 'trace' => $th->getTrace()], 400);
@@ -98,7 +94,6 @@ class AuthController extends Controller
         return response()->json(['token' => $user->generateBearerToken()->token]);
     }
 
-
     /**
      * @throws InvalidActionException
      * @throws UserNotFoundException
@@ -109,5 +104,4 @@ class AuthController extends Controller
 
         return response()->json(['token' => $output]);
     }
-
 }

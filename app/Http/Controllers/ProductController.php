@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Product;
@@ -22,8 +24,8 @@ class ProductController extends Controller
     public function getAvailableProducts()
     {
         $products = Product::whereDoesntHave('loanedProducts', function ($query) {
-                $query->where('returned', false);
-            })
+            $query->where('returned', false);
+        })
             ->with('serialNumbers')
             ->get();
 
@@ -33,9 +35,9 @@ class ProductController extends Controller
     public function getLoanedProducts()
     {
         $loanedProducts = Product::whereHas('loanedProducts', function ($query) {
-                $query->where('returned', false);
-            })
-            ->with(['serialNumbers', 'loanedProducts.loan.userGiver' , 'loanedProducts.loan.userReceiver', 'loanedProducts.loan.userReceipt'])
+            $query->where('returned', false);
+        })
+            ->with(['serialNumbers', 'loanedProducts.loan.userGiver', 'loanedProducts.loan.userReceiver', 'loanedProducts.loan.userReceipt'])
             ->get();
 
         return response()->json($loanedProducts);

@@ -11,12 +11,10 @@ use Illuminate\Support\Facades\Schema;
 return new class() extends Migration {
     public function up(): void
     {
-
         Schema::create('user_type', function (Blueprint $table) {
             $table->id();
             $table->string('name');
         });
-
 
         Schema::create('users', function (Blueprint $table) {
             $table->id();
@@ -24,11 +22,11 @@ return new class() extends Migration {
             $table->ulid('token')->nullable();
             $table->string('email')->unique();
             $table->unsignedBigInteger('user_type_id');
-            $table->foreign("user_type_id")->references('id')->on("user_type");
+            $table->foreign('user_type_id')->references('id')->on('user_type');
 
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
-            $table->foreignIdFor(Role::class, 'role_id')->nullable();;
+            $table->foreignIdFor(Role::class, 'role_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

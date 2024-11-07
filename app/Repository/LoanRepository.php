@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Models\Loan;
@@ -16,7 +18,6 @@ class LoanRepository
     {
         $loan = Loan::findOrFail($id);
 
-
         LoanProduct::where('loan_id', $id)->delete();
 
         $this->addLoanProducts($id, $data['products']);
@@ -27,17 +28,18 @@ class LoanRepository
     public function delete(int $id): bool
     {
         $loan = Loan::findOrFail($id);
+
         return $loan->delete();
     }
 
     public function getAll()
     {
-        return Loan::with(['userGiver', 'userReceiver','userReceipt', 'loanedProducts.product', 'loanedProducts.productSerial'])->get();
+        return Loan::with(['userGiver', 'userReceiver', 'userReceipt', 'loanedProducts.product', 'loanedProducts.productSerial'])->get();
     }
 
     public function findById(int $id): Loan
     {
-        return Loan::with(['userGiver','userReceipt', 'userReceiver', 'loanedProducts.product', 'loanedProducts.productSerial'])->findOrFail($id);
+        return Loan::with(['userGiver', 'userReceipt', 'userReceiver', 'loanedProducts.product', 'loanedProducts.productSerial'])->findOrFail($id);
     }
 
     public function exists(array $products)
@@ -57,7 +59,6 @@ class LoanRepository
         return false;
     }
 
-
     public function addLoanProducts(int $loanId, array $products)
     {
         foreach ($products as $product) {
@@ -67,9 +68,8 @@ class LoanRepository
                 'product_serial_id' => $product['serial_id'] ?? null,
                 'magazines'         => $product['magazines'] ?? 0,
                 'ammunition'        => $product['ammunition'] ?? 0,
-                'returned'          => 1
+                'returned'          => 1,
             ]);
         }
     }
-
 }

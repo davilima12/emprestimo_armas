@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use App\Enums\UserType;
@@ -8,7 +10,6 @@ use App\Features\Auth\Models\AuthToken;
 use App\Features\Auth\Singletons\AuthenticatedUser;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckAdmin

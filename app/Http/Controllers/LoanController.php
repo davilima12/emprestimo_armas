@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use App\Mail\LoanSummaryEmail;
 use App\Mail\LoanReceiptEmail;
+use App\Mail\LoanSummaryEmail;
 use App\Models\Loan;
 use App\Models\LoanProduct;
 use App\Models\User;
 use App\Services\LoanService;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -28,12 +31,12 @@ class LoanController extends Controller
     public function index()
     {
         $loans = $this->loanService->listLoans();
+
         return response()->json($loans);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-
         $request->validate([
             'user_receiver_email' => 'required|email',
             'user_receiver_password' => 'required|string',
@@ -47,19 +50,12 @@ class LoanController extends Controller
         ]);
 
         DB::beginTransaction();
-        try{
-
-              // Autenticação do usuário que está emprestando
-            if (!Auth::attempt(['email' => $request->giver_email, 'password' => $request->giver_password])) {
-                return response()->json(['message' => 'Unauthorized - Giver'], 401);
-            }
-
-            $userGiverId = Auth::id();
+        try {
+            // Autenticação do usuário que está emprestando
+            $userGive = User::checkUser($request->giver_email, $request->giver_password);
 
             // Autenticação do usuário que está recebendo
-            if (!Auth::attempt(['email' => $request->user_receiver_email, 'password' => $request->user_receiver_password])) {
-                return response()->json(['message' => 'Unauthorized - Receiver'], 401);
-            }
+            User::checkUser($request->user_receiver_email, $request->user_receiver_password);
 
             $userReceiverId = User::where('email', $request->user_receiver_email)->first()->id;
 
@@ -70,7 +66,7 @@ class LoanController extends Controller
             }
 
             $loanData = [
-                'user_giver_id' => $userGiverId,
+                'user_giver_id' => $userGive->id,
                 'user_receiver_id' => $userReceiverId,
                 'product_serial_id' => $request->product_serial_id,
                 'magazines' => $request->magazines,
@@ -85,17 +81,21 @@ class LoanController extends Controller
             $loan = Loan::with('userReceiver', 'loanedProducts.product')->find($loan->id);
 
             Mail::to($loan->userReceiver->email)->send(new LoanReceiptEmail($loan));
+
             return response()->json($loan, 201);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             DB::rollback();
-            Log::error('Erro ao realizar a transação: ' . $e->getMessage());
-            return response()->json($e->getMessage(), 400);
+            Log::error('Erro ao realizar a transação: '.$e->getMessage());
+
+            return response()->json(
+                ['message' => $e->getMessage()], 400);
         }
     }
 
     public function show($id)
     {
         $loan = $this->loanService->findLoan($id);
+
         return response()->json($loan);
     }
 
@@ -113,8 +113,7 @@ class LoanController extends Controller
             'products.*.ammunition' => 'integer|min:0',
         ]);
         DB::beginTransaction();
-        try{
-
+        try {
             // Autenticação do usuário que está emprestando
             if (!Auth::attempt(['email' => $request->giver_email, 'password' => $request->giver_password])) {
                 return response()->json(['message' => 'Unauthorized - Giver'], 401);
@@ -135,7 +134,7 @@ class LoanController extends Controller
 
             foreach ($request->products as $product) {
                 $match = $existingLoanProducts->firstWhere('product_id', $product['product_id']);
-                if (!$match || ( isset($product['serial_id']) && $match->product_serial_id != $product['serial_id'])) {
+                if (!$match || (isset($product['serial_id']) && $match->product_serial_id != $product['serial_id'])) {
                     $isSameProducts = false;
                     break;
                 }
@@ -154,7 +153,7 @@ class LoanController extends Controller
                 'product_serial_id'     => $request->product_serial_id,
                 'magazines'             => $request->magazines,
                 'ammunition'            => $request->ammunition,
-                'products'              => $request->products
+                'products'              => $request->products,
             ];
 
             $this->loanService->updateLoan($id, $loanData);
@@ -164,12 +163,12 @@ class LoanController extends Controller
             $loan = Loan::with('userReceiver', 'loanedProducts.product')->find($id);
 
             Mail::to($loan->userReceiver->email)->send(new LoanReceiptEmail($loan));
+
             return response()->json(['message' => 'Loan updated successfully']);
-
-
-        }catch(Exception $e){
+        } catch (Exception $e) {
             DB::rollback();
-            Log::error('Erro ao realizar a transação: ' . $e->getMessage());
+            Log::error('Erro ao realizar a transação: '.$e->getMessage());
+
             return response()->json($e->getMessage(), 400);
         }
     }
@@ -177,13 +176,15 @@ class LoanController extends Controller
     public function destroy($id)
     {
         DB::beginTransaction();
-        try{
+        try {
             $this->loanService->deleteLoan($id);
             LoanProduct::where('loan_id', $id)->delete();
+
             return response()->json(['message' => 'Loan deleted successfully']);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             DB::rollback();
-            Log::error('Erro ao realizar a transação: ' . $e->getMessage());
+            Log::error('Erro ao realizar a transação: '.$e->getMessage());
+
             return response()->json($e->getMessage(), 400);
         }
     }
@@ -191,8 +192,7 @@ class LoanController extends Controller
     public function returnProducts(Request $request, $loanId)
     {
         DB::beginTransaction();
-        try{
-
+        try {
             $data = $request->validate([
                 'products' => 'required|array',
                 'products.*.product_id' => ['required', Rule::exists('products', 'id')],
@@ -233,15 +233,15 @@ class LoanController extends Controller
                 ]
             );
             DB::commit();
-            return response()->json(['message' => 'Products returned successfully']);
 
-        }catch(Exception $e){
+            return response()->json(['message' => 'Products returned successfully']);
+        } catch (Exception $e) {
             DB::rollback();
-            Log::error('Erro ao realizar a transação: ' . $e->getMessage());
+            Log::error('Erro ao realizar a transação: '.$e->getMessage());
+
             return response()->json($e->getMessage(), 400);
         }
     }
-
 
     public function loansByUser(int $user_id, $filters = [])
     {
@@ -256,9 +256,6 @@ class LoanController extends Controller
 
         return $query->get();
     }
-
-
-
 
     public function sendMailLoansByUser(Request $request, int $user_id)
     {

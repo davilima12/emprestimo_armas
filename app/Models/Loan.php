@@ -1,20 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $user_receiver_id
+ * @property int $user_giver_id
+ * @property int $user_receipt_id
+ * @property Carbon $receipt_date
+ */
 class Loan extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'user_giver_id',
         'user_receiver_id',
         'user_receipt_id',
-        'receipt_date'
+        'receipt_date',
     ];
 
     // Relacionamento com o usuário que empresta

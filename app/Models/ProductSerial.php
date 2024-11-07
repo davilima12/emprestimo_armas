@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,7 +11,7 @@ class ProductSerial extends Model
 {
     use HasFactory;
 
-    protected $table= "product_serials";
+    protected $table = 'product_serials';
 
     protected $fillable = [
         'product_id',

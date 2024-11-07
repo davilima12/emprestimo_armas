@@ -6,14 +6,14 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class LoanSummaryEmail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public function __construct(
         public $loans,
@@ -34,7 +34,7 @@ class LoanSummaryEmail extends Mailable
             view: 'user.mail.loan_summary',
             with: [
                 'loans' => $this->loans,
-                'user'  => $this->user
+                'user'  => $this->user,
             ],
         );
     }

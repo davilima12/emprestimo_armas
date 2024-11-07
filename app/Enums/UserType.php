@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum UserType: int
@@ -14,7 +16,7 @@ enum UserType: int
      */
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             UserType::Admin => 'Admin',
             UserType::User => 'User',
         };

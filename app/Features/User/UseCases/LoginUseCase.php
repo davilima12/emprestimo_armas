@@ -6,9 +6,7 @@ namespace App\Features\User\UseCases;
 
 use App\Features\Auth\Exceptions\InvalidActionException;
 use App\Features\Auth\Exceptions\UserNotFoundException;
-use App\Features\User\Models\User;
 use App\Features\User\ValueObjects\Email;
-use Illuminate\Support\Facades\Hash;
 
 class LoginUseCase
 {
@@ -18,6 +16,5 @@ class LoginUseCase
      */
     public function execute(Email $email, string $password): string
     {
-
     }
 }
