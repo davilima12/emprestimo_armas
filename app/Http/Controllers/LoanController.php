@@ -61,7 +61,6 @@ class LoanController extends Controller
             $existingLoan = $this->loanService->checkExistingLoan($request->products);
 
             if ($existingLoan) {
-
                 return response()->json(['message' => 'Item already loaned out'], 400);
             }
             DB::beginTransaction();
