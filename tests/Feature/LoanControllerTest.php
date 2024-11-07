@@ -97,7 +97,7 @@ class LoanControllerTest extends TestCase
             [
                 'product_id' => $product->id,
                 'product_serial_id' => $productSerial->id,
-                'loan_id' => $loan->id
+                'loan_id' => $loan->id,
             ]
         );
 
@@ -152,10 +152,9 @@ class LoanControllerTest extends TestCase
 
         $loanController = app(LoanController::class);
 
-
         $response = $loanController->store(new Request($payload));
 
-        /** @var Loan  $loan */
+        /** @var Loan $loan */
         $loan = $response->original;
 
         $this->assertEquals($userReceiver->id, $loan->user_receipt_id);
