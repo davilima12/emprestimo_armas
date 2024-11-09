@@ -91,7 +91,7 @@ class AuthController extends Controller
             throw new UserNotFoundException('Email ou senha incorretos!');
         }
 
-        return response()->json(['token' => $user->generateBearerToken()->token]);
+        return response()->json(['token' => $user->generateBearerToken()->token, 'user'=>  $user]);
     }
 
     /**
